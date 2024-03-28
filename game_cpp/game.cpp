@@ -19,8 +19,8 @@ public:
 	float y = 0.f;
 
 	constexpr Vector2() = default;
-	constexpr Vector2( float vx, float vy );
-	constexpr Vector2( Vector2 const &other ) = default;
+	constexpr Vector2(float vx, float vy);
+	constexpr Vector2(Vector2 const& other) = default;
 	Vector2 operator+=(Vector2 const& other) {
 		x += other.x;
 		y += other.y;
@@ -60,9 +60,9 @@ float Abs(const Vector2& v) {
 }
 
 
-constexpr Vector2::Vector2( float vx, float vy ) :
-	x( vx ),
-	y( vy )
+constexpr Vector2::Vector2(float vx, float vy) :
+	x(vx),
+	y(vy)
 {
 }
 
@@ -86,7 +86,7 @@ namespace Params
 		// corner pocket are moved a bit because balls don't fit otherwise
 		static constexpr std::array< Vector2, 6 > pocketsPositions =
 		{
-			Vector2{ -0.5f * width + 0.1f, -0.5f * height +0.1f },
+			Vector2{ -0.5f * width + 0.1f, -0.5f * height + 0.1f },
 			Vector2{ 0.f, -0.5f * height },
 			Vector2{ 0.5f * width - 0.1f, -0.5f * height + 0.1f },
 			Vector2{ -0.5f * width + 0.1f, 0.5f * height - 0.1f },
@@ -97,14 +97,14 @@ namespace Params
 		static constexpr std::array< Vector2, 7 > ballsPositions =
 		{
 			// player ball
-			Vector2( -0.3f * width, 0.f ),
+			Vector2(-0.3f * width, 0.f),
 			// other balls
-			Vector2( 0.2f * width, 0.f ),
-			Vector2( 0.25f * width, 0.05f * height ),
-			Vector2( 0.25f * width, -0.05f * height ),
-			Vector2( 0.3f * width, 0.1f * height ),
-			Vector2( 0.3f * width, 0.f ),
-			Vector2( 0.3f * width, -0.1f * height )
+			Vector2(0.2f * width, 0.f),
+			Vector2(0.25f * width, 0.05f * height),
+			Vector2(0.25f * width, -0.05f * height),
+			Vector2(0.3f * width, 0.1f * height),
+			Vector2(0.3f * width, 0.f),
+			Vector2(0.3f * width, -0.1f * height)
 		};
 	}
 
@@ -129,7 +129,7 @@ class Table
 {
 public:
 	Table() = default;
-	Table( Table const& ) = delete;
+	Table(Table const&) = delete;
 
 	void init();
 	void deinit();
@@ -145,26 +145,26 @@ private:
 
 void Table::init()
 {
-	for ( int i = 0; i < 6; i++ )
+	for (int i = 0; i < 6; i++)
 	{
-		assert( !pockets[ i ] );
-		pockets[ i ] = Scene::createPocketMesh( Params::Table::pocketRadius );
-		Scene::placeMesh( pockets[ i ], Params::Table::pocketsPositions[ i ].x, Params::Table::pocketsPositions[ i ].y, 0.f );
+		assert(!pockets[i]);
+		pockets[i] = Scene::createPocketMesh(Params::Table::pocketRadius);
+		Scene::placeMesh(pockets[i], Params::Table::pocketsPositions[i].x, Params::Table::pocketsPositions[i].y, 0.f);
 	}
 
-	for ( int i = 0; i < 7; i++ )
+	for (int i = 0; i < 7; i++)
 	{
-		assert( !balls[ i ] );
-		balls[ i ] = Scene::createBallMesh( Params::Ball::radius );
-		Scene::placeMesh( balls[ i ], Params::Table::ballsPositions[ i ].x, Params::Table::ballsPositions[ i ].y, 0.f );
+		assert(!balls[i]);
+		balls[i] = Scene::createBallMesh(Params::Ball::radius);
+		Scene::placeMesh(balls[i], Params::Table::ballsPositions[i].x, Params::Table::ballsPositions[i].y, 0.f);
 	}
 }
 
 
 void Table::deinit()
 {
-	for ( Scene::Mesh* mesh : pockets )
-		Scene::destroyMesh( mesh );
+	for (Scene::Mesh* mesh : pockets)
+		Scene::destroyMesh(mesh);
 	for (Scene::Mesh* mesh : balls)
 		if (mesh) {
 			Scene::destroyMesh(mesh);
@@ -174,7 +174,7 @@ void Table::deinit()
 }
 
 
-void Table::update(const std::array<Vector2, 7>& balls_positions){
+void Table::update(const std::array<Vector2, 7>& balls_positions) {
 	for (int i = 0; i < 7; i++)
 	{
 		if (balls[i]) {
@@ -207,12 +207,12 @@ namespace Game
 	std::array<Vector2, 7> cur_ball_speeds;
 	std::array<bool, 7> scored;
 	std::array<std::array<int, 7>, 7> last_collision;
-	
+
 
 	void init()
 	{
-		Engine::setTargetFPS( Params::System::targetFPS );
-		Scene::setupBackground( Params::Table::width, Params::Table::height );
+		Engine::setTargetFPS(Params::System::targetFPS);
+		Scene::setupBackground(Params::Table::width, Params::Table::height);
 		table.init();
 		cur_ball_positions = Params::Table::ballsPositions;
 		cur_ball_speeds.fill(Vector2(0, 0));
@@ -230,7 +230,7 @@ namespace Game
 	}
 
 	void collide_two_balls(int i, int j) {
-		if (i >= j || scored[j] || scored[i]) { 
+		if (i >= j || scored[j] || scored[i]) {
 			return;
 		}
 		last_collision[i][j] = std::min(last_collision[i][j] + 1, 10); // to prevent overflow after one year of no collisions
@@ -301,7 +301,7 @@ namespace Game
 		}
 	}
 
-	void update( float dt )
+	void update(float dt)
 	{
 		if (scored[0]) {  // no more moves
 			deinit();
@@ -320,9 +320,9 @@ namespace Game
 			init();
 			return;
 		}
-		if ( isChargingShot )
-			shotChargeProgress = std::min( shotChargeProgress + dt / Params::Shot::chargeTime, 1.f );
-		Scene::updateProgressBar( shotChargeProgress );
+		if (isChargingShot)
+			shotChargeProgress = std::min(shotChargeProgress + dt / Params::Shot::chargeTime, 1.f);
+		Scene::updateProgressBar(shotChargeProgress);
 		check_collisions();
 		for (int i = 0; i < 7; i++)
 		{
@@ -335,8 +335,8 @@ namespace Game
 
 
 
-	void mouseButtonPressed( float x, float y )
-	{	
+	void mouseButtonPressed(float x, float y)
+	{
 		for (int i = 0; i < 7; i++) // remove for easier testing
 		{
 			if (cur_ball_speeds[i]) {
@@ -347,8 +347,8 @@ namespace Game
 	}
 
 
-	void mouseButtonReleased( float x, float y )
-	{	
+	void mouseButtonReleased(float x, float y)
+	{
 		for (int i = 0; i < 7; i++) // remove for easier testing
 		{
 			if (cur_ball_speeds[i]) {
@@ -357,7 +357,7 @@ namespace Game
 		}
 		Vector2 v = Vector2(x, y) - cur_ball_positions[0];
 		isChargingShot = false;
-		cur_ball_speeds[0] = v * (shotChargeProgress / Abs(v))*6.f;
+		cur_ball_speeds[0] = v * (shotChargeProgress / Abs(v)) * 6.f;
 		//cur_ball_speeds[0] = Vector2(1, 0) * shotChargeProgress * 10.f;  // balls should travell perfectly simmetrical but they don't because 
 		shotChargeProgress = 0.f;
 	}
